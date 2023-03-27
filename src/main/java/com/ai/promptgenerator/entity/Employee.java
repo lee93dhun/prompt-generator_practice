@@ -19,7 +19,7 @@ public class Employee {
     public Employee(){
 
     }
-    public Employee(Long employeeid, String employeeName, float employeeSalary){
+    public Employee(Long employeeId, String employeeName, float employeeSalary){
         this.employeeId = employeeId;
         this.employeeName = employeeName;
         this.employeeSalary = employeeSalary;
