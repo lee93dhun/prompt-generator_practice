@@ -1,12 +1,13 @@
 package com.ai.promptgenerator.service;
 
+import com.ai.promptgenerator.dto.BoardDto;
 import com.ai.promptgenerator.entity.Board;
 import com.ai.promptgenerator.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -15,52 +16,64 @@ public class BoardServiceImpl implements BoardService{
     @Autowired
     private BoardRepository boardRepository;
 
+
     @Override
-    public Board saveBoard(Board board){
+    public Board saveBoard(BoardDto boardDto){
+       Board board = new Board();
+       board.setBoardTitle(boardDto.getBoardTitle());
+       board.setBoardContent(boardDto.getBoardContent());
+       board.setBoardWriter(boardDto.getBoardWriter());
+
         return boardRepository.save(board);
     }
 
     @Override
-    public Board getBoardById(Long id){
+    public BoardDto getBoardById(Long id){
         Optional<Board> board = boardRepository.findById(id);
-
-        if(board.isPresent()){
-            return board.get();
+        BoardDto boardDto = new BoardDto();
+        if (board.isPresent()){
+            boardDto.setBoardTitle(board.get().getBoardTitle());
+            boardDto.setBoardContent(board.get().getBoardContent());
+            boardDto.setBoardWriter(board.get().getBoardWriter());
+            return boardDto;
+        }else {
+            return boardDto;
         }
-        return null;
     }
 
     @Override
-    public Board updateBoardById(Long id, Board board){
+    public Boolean updateBoardById(Long id, BoardDto boardDto) {
         Optional<Board> optionalBoard = boardRepository.findById(id);
-
-        if (optionalBoard.isPresent()) {
-            Board originalBoard = optionalBoard.get();
-
-            if (Objects.nonNull(board.getBoardTitle()) && !"".equalsIgnoreCase(board.getBoardTitle())){
-                originalBoard.setBoardTitle(board.getBoardTitle());
-            }
-            if (Objects.nonNull(board.getBoardContent()) && board.getBoardContent() !=""){
-                originalBoard.setBoardContent(board.getBoardContent());
-            }
-            return boardRepository.save(originalBoard);
+        if(optionalBoard.isPresent()){
+            Board board = optionalBoard.get();
+            board.setBoardTitle(boardDto.getBoardTitle());
+            board.setBoardContent(boardDto.getBoardContent());
+            board.setBoardWriter(boardDto.getBoardWriter());
+            boardRepository.save(board);
+            return true;
+        }else {
+            return false;
         }
-        return null;
     }
 
     @Override
-    public String deleteBoardById (Long id){
-        if(boardRepository.findById(id).isPresent()){
-            boardRepository.deleteById(id);
-            return "Board deleted successfully";
-        }
-        return "No such Board in the database";
+    public String deleteBoardById(Long id) {
+        boardRepository.deleteById(id);
+        return "Board with id " + id + " has been deleted";
     }
 
     @Override
-    public List<Board> fetchAllBoard(){
-        List<Board> allBoard = boardRepository.findAll();
-        return allBoard;
+    public List<BoardDto> fetchAllBoard() {
+        List<Board> boardList = boardRepository.findAll();
+        List<BoardDto> boardDtoList = new ArrayList<>();
+        for(int i=0; i<boardList.size(); i++){
+            BoardDto boardDto = new BoardDto();
+            boardDto.setBoardTitle(boardList.get(i).getBoardTitle());
+            boardDto.setBoardContent(boardList.get(i).getBoardContent());
+            boardDto.setBoardWriter(boardList.get(i).getBoardWriter());
+            boardDtoList.add(boardDto);
+        }
+        return boardDtoList;
     }
 
 }

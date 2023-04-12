@@ -1,19 +1,20 @@
 package com.ai.promptgenerator.service;
 
+import com.ai.promptgenerator.dto.BoardDto;
 import com.ai.promptgenerator.entity.Board;
 
 import java.util.List;
 
 public interface BoardService {
 
-    Board saveBoard(Board board);
+    Board saveBoard(BoardDto boardDto);
 
-    Board getBoardById(Long id);
+    BoardDto getBoardById(Long id);
 
-    Board updateBoardById(Long id, Board board);
+    Boolean updateBoardById(Long id, BoardDto boardDto);
 
     String deleteBoardById(Long id);
 
-    List<Board> fetchAllBoard();
+    List<BoardDto> fetchAllBoard();
 
 }

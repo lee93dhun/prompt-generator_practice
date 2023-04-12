@@ -1,5 +1,6 @@
 package com.ai.promptgenerator.controller;
 
+import com.ai.promptgenerator.dto.BoardDto;
 import com.ai.promptgenerator.entity.Board;
 import com.ai.promptgenerator.service.BoardService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,18 +15,24 @@ public class BoardController {
     private BoardService boardService;
 
     @PostMapping("/board")
-    public Board saveBoard(@RequestBody Board board){
-        return boardService.saveBoard(board);
+    public boolean saveBoard(@RequestBody BoardDto boardDto){
+        if (boardService.saveBoard(boardDto)!=null){
+            return true;
+        }
+        else {
+            return false;
+        }
+
     }
 
     @GetMapping("/board/{id}")
-    public Board getBoardById(@PathVariable("id") Long id){
-        return boardService.getBoardById(id);
+    public BoardDto getBoardById(@PathVariable("id") Long id){
+       return boardService.getBoardById(id);
     }
 
     @PutMapping("/board/{id}")
-    public Board updateBoardById(@PathVariable("id") Long id, @RequestBody Board board){
-        return boardService.updateBoardById(id, board);
+    public Boolean updateBoardById(@PathVariable("id") Long id, @RequestBody BoardDto boardDto){
+        return boardService.updateBoardById(id, boardDto);
     }
 
     @DeleteMapping("/board/{id}")
@@ -34,7 +41,7 @@ public class BoardController {
     }
 
     @GetMapping("/board")
-    public List<Board> fetchAllBoard(){
+    public List<BoardDto> fetchAllBoard(){
         return boardService.fetchAllBoard();
     }
 }
