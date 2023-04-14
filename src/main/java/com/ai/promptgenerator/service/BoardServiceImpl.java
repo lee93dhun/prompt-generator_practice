@@ -20,11 +20,15 @@ public class BoardServiceImpl implements BoardService{
     @Override
     public Board saveBoard(BoardDto boardDto){
        Board board = new Board();
-       board.setBoardTitle(boardDto.getBoardTitle());
-       board.setBoardContent(boardDto.getBoardContent());
-       board.setBoardWriter(boardDto.getBoardWriter());
+       if(boardDto != null) {
+           board.setBoardTitle(boardDto.getBoardTitle());
+           board.setBoardContent(boardDto.getBoardContent());
+           board.setBoardWriter(boardDto.getBoardWriter());
 
-        return boardRepository.save(board);
+           return boardRepository.save(board);
+       }else {
+           return null;
+       }
     }
 
     @Override
@@ -32,12 +36,13 @@ public class BoardServiceImpl implements BoardService{
         Optional<Board> board = boardRepository.findById(id);
         BoardDto boardDto = new BoardDto();
         if (board.isPresent()){
+            boardDto.setId(board.get().getId());
             boardDto.setBoardTitle(board.get().getBoardTitle());
             boardDto.setBoardContent(board.get().getBoardContent());
             boardDto.setBoardWriter(board.get().getBoardWriter());
             return boardDto;
         }else {
-            return boardDto;
+            return null;
         }
     }
 
@@ -57,23 +62,38 @@ public class BoardServiceImpl implements BoardService{
     }
 
     @Override
-    public String deleteBoardById(Long id) {
-        boardRepository.deleteById(id);
-        return "Board with id " + id + " has been deleted";
+    public Boolean deleteBoardById(Long id) {
+        Optional<Board> optionalBoard = boardRepository.findById(id);
+        if(optionalBoard.isPresent()){
+            boardRepository.deleteById(id);
+            return true;
+        }else {
+            return false;
+        }
+
     }
 
     @Override
     public List<BoardDto> fetchAllBoard() {
-        List<Board> boardList = boardRepository.findAll();
         List<BoardDto> boardDtoList = new ArrayList<>();
-        for(int i=0; i<boardList.size(); i++){
-            BoardDto boardDto = new BoardDto();
-            boardDto.setBoardTitle(boardList.get(i).getBoardTitle());
-            boardDto.setBoardContent(boardList.get(i).getBoardContent());
-            boardDto.setBoardWriter(boardList.get(i).getBoardWriter());
-            boardDtoList.add(boardDto);
+
+
+
+
+        List<Board> boardList = boardRepository.findAll();
+        if(!(boardList.isEmpty())) {
+            for (int i = 0; i < boardList.size(); i++) {
+                BoardDto boardDto = new BoardDto();
+                boardDto.setId(boardList.get(i).getId());
+                boardDto.setBoardTitle(boardList.get(i).getBoardTitle());
+                boardDto.setBoardContent(boardList.get(i).getBoardContent());
+                boardDto.setBoardWriter(boardList.get(i).getBoardWriter());
+                boardDtoList.add(boardDto);
+            }
+            return boardDtoList;
+        }else {
+            return null;
         }
-        return boardDtoList;
     }
 
 }

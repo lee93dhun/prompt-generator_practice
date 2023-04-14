@@ -13,7 +13,7 @@ public interface BoardService {
 
     Boolean updateBoardById(Long id, BoardDto boardDto);
 
-    String deleteBoardById(Long id);
+    Boolean deleteBoardById(Long id);
 
     List<BoardDto> fetchAllBoard();
 
