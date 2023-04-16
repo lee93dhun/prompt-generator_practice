@@ -2,6 +2,8 @@ package com.ai.promptgenerator.service;
 
 import com.ai.promptgenerator.dto.BoardDto;
 import com.ai.promptgenerator.entity.Board;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -15,6 +17,8 @@ public interface BoardService {
 
     Boolean deleteBoardById(Long id);
 
-    List<BoardDto> fetchAllBoard();
+    Page<BoardDto> fetchAllBoard(Pageable pageable);
+
+
 
 }

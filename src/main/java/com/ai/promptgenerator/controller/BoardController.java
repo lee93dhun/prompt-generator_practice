@@ -5,6 +5,10 @@ import com.ai.promptgenerator.message.ResponseMessage;
 import com.ai.promptgenerator.service.BoardService;
 import com.ai.promptgenerator.status.StatusEnum;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -101,16 +105,34 @@ public class BoardController {
 //
 //        return boardService.fetchAllBoard();
 //    }
+//    @GetMapping("/board")
+//    public  ResponseEntity<ResponseMessage<List<BoardDto>>> fetchAllBoard(){
+//        ResponseMessage<List<BoardDto>> rm = new ResponseMessage();
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
+//        List<BoardDto> boardDtoList = boardService.fetchAllBoard();
+//        if(boardDtoList != null) {
+//            rm.setStatus(StatusEnum.OK);
+//            rm.setMessage("success");
+//            rm.setData(boardDtoList);
+//            return new ResponseEntity<>(rm, headers, HttpStatus.OK);
+//        }else {
+//            rm.setStatus(StatusEnum.BAD_REQUEST);
+//            rm.setMessage("fail");
+//            return new ResponseEntity<>(rm, headers, HttpStatus.BAD_REQUEST);
+//        }
+//    }
+
     @GetMapping("/board")
-    public  ResponseEntity<ResponseMessage<List<BoardDto>>> fetchAllBoard(){
-        ResponseMessage<List<BoardDto>> rm = new ResponseMessage();
+    public  ResponseEntity<ResponseMessage<Page<BoardDto>>> fetchAllBoard( @PageableDefault(size = 5,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
+        ResponseMessage<Page<BoardDto>> rm = new ResponseMessage();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
-        List<BoardDto> boardDtoList = boardService.fetchAllBoard();
-        if(boardDtoList != null) {
+        Page<BoardDto> boardDtos = boardService.fetchAllBoard(pageable);
+        if(boardDtos != null) {
             rm.setStatus(StatusEnum.OK);
             rm.setMessage("success");
-            rm.setData(boardDtoList);
+            rm.setData(boardDtos);
             return new ResponseEntity<>(rm, headers, HttpStatus.OK);
         }else {
             rm.setStatus(StatusEnum.BAD_REQUEST);
@@ -118,4 +140,6 @@ public class BoardController {
             return new ResponseEntity<>(rm, headers, HttpStatus.BAD_REQUEST);
         }
     }
+
+
 }

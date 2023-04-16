@@ -4,6 +4,8 @@ import com.ai.promptgenerator.dto.BoardDto;
 import com.ai.promptgenerator.entity.Board;
 import com.ai.promptgenerator.repository.BoardRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -73,27 +75,34 @@ public class BoardServiceImpl implements BoardService{
 
     }
 
+//    @Override
+//    public List<BoardDto> fetchAllBoard() {
+//        List<BoardDto> boardDtoList = new ArrayList<>();
+//        List<Board> boardList = boardRepository.findAll();
+//        if (!(boardList.isEmpty())) {
+//            for (int i = 0; i < boardList.size(); i++) {
+//                BoardDto boardDto = new BoardDto();
+//                boardDto.setId(boardList.get(i).getId());
+//                boardDto.setBoardTitle(boardList.get(i).getBoardTitle());
+//                boardDto.setBoardContent(boardList.get(i).getBoardContent());
+//                boardDto.setBoardWriter(boardList.get(i).getBoardWriter());
+//                boardDtoList.add(boardDto);
+//            }
+//            return boardDtoList;
+//        } else {
+//            return null;
+//        }
+//    }
     @Override
-    public List<BoardDto> fetchAllBoard() {
-        List<BoardDto> boardDtoList = new ArrayList<>();
-
-
-
-
-        List<Board> boardList = boardRepository.findAll();
-        if(!(boardList.isEmpty())) {
-            for (int i = 0; i < boardList.size(); i++) {
-                BoardDto boardDto = new BoardDto();
-                boardDto.setId(boardList.get(i).getId());
-                boardDto.setBoardTitle(boardList.get(i).getBoardTitle());
-                boardDto.setBoardContent(boardList.get(i).getBoardContent());
-                boardDto.setBoardWriter(boardList.get(i).getBoardWriter());
-                boardDtoList.add(boardDto);
-            }
-            return boardDtoList;
-        }else {
-            return null;
-        }
+    public Page<BoardDto> fetchAllBoard(Pageable pageable) {
+        Page<Board> boardList = boardRepository.findAllByOrderByIdDesc(pageable);
+        Page<BoardDto> boardDtoList = boardList.map(m->BoardDto.builder()
+                .id(m.getId())
+                .boardTitle(m.getBoardTitle())
+                .boardContent(m.getBoardContent())
+                .boardWriter(m.getBoardWriter())
+                .build());
+        return boardDtoList;
     }
 
 }
