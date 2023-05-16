@@ -124,7 +124,7 @@ public class BoardController {
 //    }
 
     @GetMapping("/board")
-    public  ResponseEntity<ResponseMessage<Page<BoardDto>>> fetchAllBoard( @PageableDefault(size = 5,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
+    public ResponseEntity<ResponseMessage<Page<BoardDto>>> fetchAllBoard( @PageableDefault(size = 5,sort = "id",direction = Sort.Direction.DESC) Pageable pageable){
         ResponseMessage<Page<BoardDto>> rm = new ResponseMessage();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(new MediaType("application", "json", Charset.forName("UTF-8")));
